@@ -16,13 +16,14 @@ impute2machhap: Convert impute2 haplotype output to mach format.
                 © Kaiyin Zhong 2014
 
 Usage: impute2machhap --file IMPUTE2_FILE_STEM [--outdir OUTPUT_DIR]
-       impute2machhap --help true
+       impute2machhap
 
 Options:
     --file      The filepath of input impute2 file without the "_haps" ending.
                 e.g. for a file named "xxx.yyy_haps", you should give "xxx.yyy"
     --outdir    Output directory, default to current directory.
-    --help      Print this help message.
+
+                Without any args, print this help message.
         `;
 
 
@@ -132,14 +133,14 @@ Options:
         outputStrings ~= line;
     }
     string machOutput = outputStrings.join("\n");
-    string machOut = (outdir ~ "/" ~ fstem ~ ".mach.out");
+    string machOut = (outdir ~ "/" ~ baseName(fstem) ~ ".mach.out");
     File machfh = File(machOut, "w");
     machfh.write(machOutput);
 
 
     // write SNP list to file
     string snpsString = snps.join("\n");
-    string snpsOut = (outdir ~ "/" ~ fstem ~ ".data.dat");
+    string snpsOut = (outdir ~ "/" ~ baseName(fstem) ~ ".data.dat");
     File snpsfh = File(snpsOut, "w");
     snpsfh.write(snpsString);
 
