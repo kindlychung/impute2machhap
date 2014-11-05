@@ -8,7 +8,8 @@ parser = argparse.ArgumentParser(
 description="Convert impute2 haplotype files to mach format. \n©2014 Kaiyin Zhong"
 )
 parser.add_argument("files", nargs="+", help="Files to be converted (ending with _haps.gz)")
-parser.add_argument("--outdir", help="Output directory")
+parser.add_argument("--outdir", "-o", help="Output directory")
+parser.add_argument("--debug", "-d", action="store_true", help="Debugging mode")
 args = parser.parse_args()
 
 # pdb.set_trace()
@@ -18,6 +19,8 @@ if args.outdir == None:
 pat = re.compile(r"_haps\.gz$")
 try:
     tmpDir = tempfile.mkdtemp()
+    if args.debug:
+        print("Temp folder: %s" % tmpDir)
     for inFile in args.files:
         print("Converting %s" % inFile)
         prefix = pat.sub("", inFile)
@@ -35,12 +38,16 @@ try:
         # deal with _samples files
         sampleFile = prefix + "_samples"
         shutil.copy2(sampleFile, tmpDir)
+        fileDir, sampleName     = os.path.split(sampleFile)
+        copiedSample            = os.path.join(tmpDir, sampleName)
 
 
         subprocess.call(["gunzip", copiedFile])
-        # subprocess.call(["ls", "-l", tmpDir])
+        if args.debug:
+            subprocess.call(["ls", "-l", tmpDir])
         subprocess.call(["impute2machhap", "--file", copiedFilePrefix, "--outdir", args.outdir])
-
+        os.remove(copiedFileUnzip)
+        os.remove(copiedSample)
 finally:
     shutil.rmtree(tmpDir)
 
