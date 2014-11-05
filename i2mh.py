@@ -7,7 +7,7 @@ import os, tempfile, shutil, subprocess, re
 parser = argparse.ArgumentParser(
 description="Convert impute2 haplotype files to mach format. \n©2014 Kaiyin Zhong"
 )
-parser.add_argument("files", nargs="+", help="Files to be converted")
+parser.add_argument("files", nargs="+", help="Files to be converted (ending with _haps.gz)")
 parser.add_argument("--outdir", help="Output directory")
 args = parser.parse_args()
 
